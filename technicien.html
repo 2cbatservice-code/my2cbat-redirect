@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+  <title>My2cbat - Profil Technicien</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .logo {
+      width: 80px;
+      height: 80px;
+      background-color: #ff9800;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 2.5rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      color: #666;
+      line-height: 1.4;
+      margin-bottom: 1.5rem;
+    }
+    .spinner {
+      display: inline-block;
+      width: 2rem;
+      height: 2rem;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #ff9800;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .button {
+      display: inline-block;
+      background-color: #ff9800;
+      color: white;
+      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 2rem;
+      font-weight: 500;
+      margin-top: 1rem;
+    }
+    .footnote {
+      font-size: 0.75rem;
+      color: #999;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="logo">🔧</div>
+  <h1>My2cbat Service</h1>
+  <p>Redirection vers le profil du technicien...</p>
+  <div class="spinner"></div>
+  <p style="font-size: 0.85rem;">Si l'application ne s'ouvre pas automatiquement,<br>vous pouvez la télécharger ci-dessous.</p>
+  <a id="storeLink" href="https://play.google.com/store/apps/details?id=com.my2cbat.service" class="button">📱 Télécharger l'application</a>
+  <div class="footnote">L'application My2cbat vous permet de trouver et réserver des professionnels qualifiés.</div>
+</div>
+
+<script>
+  (function() {
+    // Fonction pour obtenir l'ID depuis l'URL
+    function getTechnicianId() {
+      const params = new URLSearchParams(window.location.search);
+      let id = params.get('id');
+      if (id) return id;
+      // Fallback si l'id est dans le chemin (ex: /technicien/123)
+      const pathParts = window.location.pathname.split('/');
+      for (let i = pathParts.length - 1; i >= 0; i--) {
+        if (pathParts[i] && !isNaN(pathParts[i])) {
+          return pathParts[i];
+        }
+      }
+      return null;
+    }
+
+    const technicianId = getTechnicianId();
+    if (!technicianId) {
+      console.warn('Aucun ID de technicien trouvé dans l\'URL');
+      // Optionnel : afficher un message d'erreur
+      document.querySelector('.container p').innerHTML = '❌ Lien invalide.<br>Veuillez réessayer depuis l\'application.';
+      return;
+    }
+
+    // Construction du deep link
+    const appScheme = 'my2cbat://technician/' + technicianId;
+    const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.my2cbat.service';
+
+    // Tentative d'ouverture de l'application
+    window.location.href = appScheme;
+
+    // Si l'application n'est pas installée, rediriger vers le Play Store après un délai
+    let timeoutId = setTimeout(function() {
+      window.location.href = playStoreUrl;
+    }, 500); // Délai de 500 millisecondes
+
+    // Si la page perd le focus, c'est que l'app a probablement été ouverte
+    window.addEventListener('blur', function() {
+      clearTimeout(timeoutId);
+    });
+  })();
+</script>
+</body>
+</html>
