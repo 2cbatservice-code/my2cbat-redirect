@@ -84,12 +84,10 @@
 
 <script>
   (function() {
-    // Récupération de l'ID du bien depuis l'URL (paramètre 'id')
     function getPropertyId() {
       const params = new URLSearchParams(window.location.search);
       let id = params.get('id');
       if (id) return id;
-      // Fallback si l'ID est dans le chemin (ex: /property/123)
       const pathParts = window.location.pathname.split('/');
       for (let i = pathParts.length - 1; i >= 0; i--) {
         if (pathParts[i] && !isNaN(pathParts[i])) {
@@ -101,25 +99,19 @@
 
     const propertyId = getPropertyId();
     if (!propertyId) {
-      console.warn('Aucun ID de bien trouvé dans l\'URL');
       document.querySelector('.container p').innerHTML = '❌ Lien invalide.<br>Veuillez réessayer depuis l\'application.';
       return;
     }
 
-    // Construction du deep link (schéma à adapter selon votre app)
-    // Exemple : my2cbat://property/123
     const appScheme = 'my2cbat://property/' + propertyId;
     const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.my2cbat.service';
 
-    // Tentative d'ouverture de l'application
     window.location.href = appScheme;
 
-    // Délai de repli vers le Play Store
     let timeoutId = setTimeout(function() {
       window.location.href = playStoreUrl;
     }, 500);
 
-    // Si la page perd le focus, l'application a probablement été ouverte
     window.addEventListener('blur', function() {
       clearTimeout(timeoutId);
     });
